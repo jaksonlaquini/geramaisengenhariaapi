@@ -91,4 +91,37 @@ router.post('/enviarorcamento', function(req, res, next) {
   });
 });
 
+router.post('/trabalheConosco', function(req, res, next) {
+ 
+  mailOptions.to = '';
+  mailOptions.subject = '';
+  mailOptions.html = '';
+  mailOptions.attachments = [];
+
+  const areaInteresse = req.body.areaInteresse;
+  const nome =  req.body.nome;
+  const telefone = req.body.telefone;
+  const email = req.body.email;
+  const apresentacao = req.body.apresentacao;
+
+  mailOptions.to = 'contato@geramaisengenharia.com.br';
+  mailOptions.subject = 'Trabalhe Conosco';
+  mailOptions.html = '<h1>Interesse em trabalhar conosco</h1><br><p><b>ÁREA DE INTERESSE:  </b> ' + areaInteresse + ' </p><p><b>Nome:  </b> '+ nome + ' </p><p><b>TELEFONE:  </b> ' + telefone + ' </p><p><b>EMAIL: </b> ' + email + ' </p><p><b>APRESENTAÇÃO:  </b>' + apresentacao + ' </p>';
+  
+  if (req.files) {
+    mailOptions.attachments = [{ 
+      filename: req.files.anexo.name, 
+      content: new Buffer(req.files.anexo.data,'utf-8')
+    }]
+  }
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      res.json({sucesso: false, data: error});
+    } else {
+      res.json({sucesso: true, data: info.response});
+    }
+  });
+});
+
 module.exports = router;
